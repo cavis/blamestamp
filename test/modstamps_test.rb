@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ModstampsTest < ActiveSupport::TestCase
-  test "truth" do
+  test "exists" do
     assert_kind_of Module, Modstamps
   end
 end
