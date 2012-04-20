@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :modstamps do
+# task :blamestamp do
 #   # Task goes here
 # end

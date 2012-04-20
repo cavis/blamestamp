@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    modstamps (0.0.1)
+    blamestamp (0.0.1)
       rails (~> 3.2.3)
 
 GEM
@@ -101,7 +101,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  blamestamp!
   devise
-  modstamps!
   sqlite3
   turn
