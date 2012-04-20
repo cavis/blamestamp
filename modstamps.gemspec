@@ -1,17 +1,22 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/modstamps/version', __FILE__)
+$:.push File.expand_path("../lib", __FILE__)
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["rtanc"]
-  gem.email         = ["ryancavis@gmail.com"]
-  gem.description   = %q{Provides basic, predictable auditing for ActiveRecords}
-  gem.summary       = %q{Similar to the ActiveRecord::Timestamp module, this gem provides an audit trail for modifications to records.  Intended to work with Devise, it will also log the currently logged-in user.}
-  gem.homepage      = "https://github.com/rtanc/modstamps"
+# Maintain your gem's version:
+require "modstamps/version"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "modstamps"
-  gem.require_paths = ["lib"]
-  gem.version       = Modstamps::VERSION
+# Describe your gem and declare its dependencies:
+Gem::Specification.new do |s|
+  s.name        = "modstamps"
+  s.version     = Modstamps::VERSION
+  s.authors     = ["TODO: Your name"]
+  s.email       = ["TODO: Your email"]
+  s.homepage    = "TODO"
+  s.summary     = "TODO: Summary of Modstamps."
+  s.description = "TODO: Description of Modstamps."
+
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.test_files = Dir["test/**/*"]
+
+  s.add_dependency "rails", "~> 3.2.3"
+
+  s.add_development_dependency "sqlite3"
 end
