@@ -4,6 +4,7 @@ require 'rails/all'
 
 Bundler.require
 require "modstamps"
+require "devise"
 
 module Dummy
   class Application < Rails::Application
