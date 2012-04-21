@@ -16,10 +16,10 @@ ActiveRecord::Schema.define(:version => 20120420005606) do
   create_table "projects", :force => true do |t|
     t.string   "title"
     t.text     "desc"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by"
-    t.integer  "updated_by"
+    t.datetime "blame_cre_at"
+    t.datetime "blame_upd_at"
+    t.integer  "blame_cre_by"
+    t.integer  "blame_upd_by"
   end
 
   create_table "users", :force => true do |t|

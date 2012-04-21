@@ -4,12 +4,11 @@ class CreateProjects < ActiveRecord::Migration
       t.string :title
       t.text :desc
 
-      # stamps
       # t.timestamps
-      t.datetime :created_at#, :null => false
-      t.datetime :updated_at
-      t.integer :created_by#, :null => false
-      t.integer :updated_by
+      t.datetime :blame_cre_at#, :null => false
+      t.datetime :blame_upd_at
+      t.integer :blame_cre_by#, :null => false
+      t.integer :blame_upd_by
     end
   end
 end

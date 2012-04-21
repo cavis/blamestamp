@@ -3,36 +3,36 @@ require 'test_helper'
 class ProjectsControllerTest < ActionController::TestCase
   test "logged-out stamps on create" do
     create_project("foo", "bar")
-    assert @project.created_at, "created_at not set"
-    assert_nil @project.created_by, "created_by was set"
-    assert_nil @project.updated_at, "updated_at was set"
-    assert_nil @project.updated_by, "updated_by was set"
+    assert @project.blame_cre_at, "created_at not set"
+    assert_nil @project.blame_cre_by, "created_by was set"
+    assert_nil @project.blame_upd_at, "updated_at was set"
+    assert_nil @project.blame_upd_by, "updated_by was set"
   end
 
   test "logged-in stamps on create" do
     sign_in :user, users(:harold)
     create_project("foo", "bar")
-    assert @project.created_at, "created_at not set"
-    assert @project.created_by, "created_by not set"
-    assert_nil @project.updated_at, "updated_at was set"
-    assert_nil @project.updated_by, "updated_by was set"
+    assert @project.blame_cre_at, "created_at not set"
+    assert @project.blame_cre_by, "created_by not set"
+    assert_nil @project.blame_upd_at, "updated_at was set"
+    assert_nil @project.blame_upd_by, "updated_by was set"
   end
 
   test "logged-out stamps on update" do
     update_project(projects(:secret), "foo", "bar")
-    assert_equal projects(:secret).created_at, @project.created_at, "created_at changed"
-    assert_equal projects(:secret).created_by, @project.created_by, "created_by changed"
-    assert @project.updated_at, "updated_at not set"
-    assert_nil @project.updated_by, "updated_by was set"
+    assert_equal projects(:secret).blame_cre_at, @project.blame_cre_at, "created_at changed"
+    assert_equal projects(:secret).blame_cre_by, @project.blame_cre_by, "created_by changed"
+    assert @project.blame_upd_at, "updated_at not set"
+    assert_nil @project.blame_upd_by, "updated_by was set"
   end
 
   test "logged-in stamps on update" do
     sign_in :user, users(:harold)
     update_project(projects(:secret), "foo", "bar")
-    assert_equal projects(:secret).created_at, @project.created_at, "created_at changed"
-    assert_equal projects(:secret).created_by, @project.created_by, "created_by changed"
-    assert @project.updated_at, "updated_at not set"
-    assert_equal users(:harold).id, @project.updated_by, "updated_by not harold"
+    assert_equal projects(:secret).blame_cre_at, @project.blame_cre_at, "created_at changed"
+    assert_equal projects(:secret).blame_cre_by, @project.blame_cre_by, "created_by changed"
+    assert @project.blame_upd_at, "updated_at not set"
+    assert_equal users(:harold).id, @project.blame_upd_by, "updated_by not harold"
   end
 
   private
