@@ -4,6 +4,7 @@ end
 # activerecord "blameable"
 if defined?(ActiveRecord)
   require 'blamestamp/active_record'
+  require 'blamestamp/schema'
 else
   raise "blamestamp only works with active_record"
 end
