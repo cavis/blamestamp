@@ -4,6 +4,11 @@ module Blamestamp
   module Blameable
     extend ActiveSupport::Concern
 
+    included do
+      belongs_to :blame_cre_user, :class_name => 'User', :foreign_key => 'blame_cre_by'
+      belongs_to :blame_upd_user, :class_name => 'User', :foreign_key => 'blame_upd_by'
+    end
+
     module ClassMethods
       def blameable(options = {})
         self.before_create :blame_create

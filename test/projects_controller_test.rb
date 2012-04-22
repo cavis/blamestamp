@@ -35,6 +35,18 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_equal users(:harold).id, @project.blame_upd_by, "updated_by not harold"
   end
 
+  test "relationships are set" do
+    sign_in :user, users(:harold)
+    create_project("foo", "bar")
+    assert_equal users(:harold).email, @project.blame_cre_user.email, "created email differs"
+    assert_equal nil, @project.blame_upd_user, "updated user exists"
+
+    sign_out :user
+    sign_in :user, users(:isak)
+    update_project(@project, "foo", "bar2")
+    assert_equal users(:isak).email, @project.blame_upd_user.email, "updated email differs"
+  end
+
   private
 
   # helper to create and set a new project
