@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Provides basic, predictable auditing for ActiveRecords."
   s.description = "Similar to ActiveRecord::Timestamp, this gem provides a blame for create/update modifications to records.  Intended to work with Devise, it will also log the currently logged-in user for the create/update action."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency('activerecord', '>= 3.0.0')
