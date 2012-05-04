@@ -11,7 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120420005606) do
+ActiveRecord::Schema.define(:version => 20120504025050) do
+
+  create_table "alligators", :force => true do |t|
+    t.string   "name"
+    t.integer  "project_id"
+    t.datetime "gator_cre_at"
+    t.datetime "gator_upd_at"
+    t.integer  "gator_cre_by"
+    t.integer  "gator_upd_by"
+  end
+
+  create_table "flags", :force => true do |t|
+    t.string   "origin"
+    t.integer  "project_id"
+    t.integer  "alligator_id"
+    t.datetime "made_at"
+    t.datetime "changed_at"
+    t.integer  "made_by"
+    t.integer  "hacked_by"
+  end
 
   create_table "projects", :force => true do |t|
     t.string   "title"

@@ -1,0 +1,12 @@
+american:
+  origin: red white and blue
+  project: secret
+  alligator: james
+french:
+  origin: blue white and red
+  project: honest
+  alligator: spot
+semaphore:
+  origin: awesome
+  project: scam
+  alligator: cam

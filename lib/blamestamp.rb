@@ -1,4 +1,13 @@
 module Blamestamp
+  def self.set_blame_user(id)
+    Thread.current[:blamer_id] = id
+  end
+  def self.get_blame_user
+    return Thread.current[:blamer_id]
+  end
+  def self.unset_blame_user
+    Thread.current[:blamer_id] = nil
+  end
 end
 
 # activerecord "blameable"

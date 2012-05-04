@@ -11,12 +11,12 @@ module Blamestamp
 
     def set_blamer
       if user_signed_in?
-        Thread.current[:blamer_id] = current_user.id
+        Blamestamp::set_blame_user(current_user.id)
       end
     end
 
     def unset_blamer
-      Thread.current[:blamer_id] = nil
+      Blamestamp::unset_blame_user()
     end
   end
 end
