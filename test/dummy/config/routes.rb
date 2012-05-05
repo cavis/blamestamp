@@ -9,5 +9,6 @@ Dummy::Application.routes.draw do
   resources :alligators do
     resources :flags
   end
+  resources :flags
 
 end

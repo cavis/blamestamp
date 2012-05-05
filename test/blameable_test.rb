@@ -8,8 +8,8 @@ class BlameableTest < ActiveSupport::TestCase
 
     p = projects(:secret)
     set_blamers(p, users(:harold), users(:isak))
-    assert_equal p.blame_cre_user.email, users(:harold).email, "incorrect cre_user"
-    assert_equal p.blame_upd_user.email, users(:isak).email, "incorrect upd_user"
+    assert_equal users(:harold).email, p.blame_cre_user.email, "incorrect cre_user"
+    assert_equal users(:isak).email, p.blame_upd_user.email, "incorrect upd_user"
   end
 
   test "prefix option" do
@@ -19,8 +19,8 @@ class BlameableTest < ActiveSupport::TestCase
 
     a = alligators(:james)
     set_blamers(a, users(:harold), users(:isak))
-    assert_equal a.gator_cre_user.email, users(:harold).email, "incorrect cre_user"
-    assert_equal a.gator_upd_user.email, users(:isak).email, "incorrect upd_user"
+    assert_equal users(:harold).email, a.gator_cre_user.email, "incorrect cre_user"
+    assert_equal users(:isak).email, a.gator_upd_user.email, "incorrect upd_user"
   end
 
   test "non array cascade option" do
@@ -32,7 +32,7 @@ class BlameableTest < ActiveSupport::TestCase
 
     assert_nil a.project.blame_cre_user, "project was blame-created"
     assert_not_nil a.project.blame_upd_user, "project not blame-updated"
-    assert_equal a.project.blame_upd_user.email, users(:isak).email, "incorrect upd_user"
+    assert_equal users(:isak).email, a.project.blame_upd_user.email, "incorrect upd_user"
   end
 
   test "array cascade option" do
@@ -46,10 +46,10 @@ class BlameableTest < ActiveSupport::TestCase
 
     assert_nil f.project.blame_cre_user, "project was blame-created"
     assert_not_nil f.project.blame_upd_user, "project not blame-updated"
-    assert_equal f.project.blame_upd_user.email, users(:harold).email, "incorrect upd_user"
+    assert_equal users(:harold).email, f.project.blame_upd_user.email, "incorrect upd_user"
     assert_nil f.alligator.gator_cre_user, "gator was blame-created"
     assert_not_nil f.alligator.gator_upd_user, "gator not blame-updated"
-    assert_equal f.alligator.gator_upd_user.email, users(:harold).email, "incorrect upd_user"
+    assert_equal users(:harold).email, f.alligator.gator_upd_user.email, "incorrect upd_user"
   end
 
   test "cre_at option" do
@@ -88,7 +88,7 @@ class BlameableTest < ActiveSupport::TestCase
 
     f = flags(:semaphore)
     set_blamers(f, users(:cameron), users(:cameron))
-    assert_equal f.maker.email, users(:cameron).email, "incorrect cre_user"
+    assert_equal users(:cameron).email, f.maker.email, "incorrect cre_user"
   end
 
   test "upd_user option" do
@@ -97,7 +97,7 @@ class BlameableTest < ActiveSupport::TestCase
 
     f = flags(:semaphore)
     set_blamers(f, users(:cameron), users(:cameron))
-    assert_equal f.hacker.email, users(:cameron).email, "incorrect upd_user"
+    assert_equal users(:cameron).email, f.hacker.email, "incorrect upd_user"
   end
 
   private

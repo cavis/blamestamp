@@ -39,7 +39,7 @@ class ProjectsControllerTest < ActionController::TestCase
     sign_in :user, users(:harold)
     create_project("foo", "bar")
     assert_equal users(:harold).email, @project.blame_cre_user.email, "created email differs"
-    assert_equal nil, @project.blame_upd_user, "updated user exists"
+    assert_nil @project.blame_upd_user, "updated user exists"
 
     sign_out :user
     sign_in :user, users(:isak)
