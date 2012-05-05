@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["rtanc"]
   s.email       = ["ryancavis@gmail.com"]
   s.homepage    = "https://github.com/rtanc/blamestamp"
-  s.summary     = "Provides basic, predictable auditing for ActiveRecords."
-  s.description = "Similar to ActiveRecord::Timestamp, this gem provides a blame for create/update modifications to records.  Intended to work with Devise, it will also log the currently logged-in user for the create/update action."
+  s.summary     = "Basic, predictable user/datetime blaming for ActiveRecords"
+  s.description = "Similar to ActiveRecord::Timestamp, this gem provides a blame datetime and user for create/update modifications to records.  Configured models will be blamed when creating or updating, and the blame can cascade to associated models on create, update or delete.  Currently, this gem is intended for use with Devise."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]

@@ -23,6 +23,10 @@ Blamestamp should be installed as a gem in your app.  Currently, it is only avai
 
 Include the gem in your Gemfile:
 
+    gem "blamestamp"
+
+Or, if you like to live on the bleeding-edge:
+
     gem "blamestamp", :git => "https://github.com/cavis/blamestamp"
 
 
@@ -74,6 +78,55 @@ By default, blamestamps adds 4 columns to your models:
 When a record is created, `blame_cre_at` and `blame_cre_by` will be set.  If no remote-user is logged in (via a controller), `blame_cre_by` will be nil.  On initial creation, both `blame_upd_at` and `blame_upd_by` will be nil.
 
 When a record is updated for the first time (and every time after), `blame_upd_at` and `blame_upd_by` are modified.  Again, `blame_upd_by` will remain nil if there is no remote-user.
+
+Additionally, `blameable` adds 2 relations to your models:
+
+* `blame_cre_user`
+* `blame_upd_user`
+
+These are standard `belongs_to` associations, and will be nil unless the `_at` column is populated.
+
+
+Advanced Options
+----------------
+
+If that's not enough for you, there are several advanced config options available.
+
+### In your migrations:
+
+If you don't like the `blame` prefix on the columns, you can change it.  In this example it will create columns `blah_cre_at`, `blah_upd_at`, `blah_cre_by`, and `blah_upd_by`.
+
+    t.blamestamps :prefix => :blah
+
+### In your model:
+
+If you changed the prefix of the columns in your migration, you should let the model know about that too:
+
+    blameable :prefix => :blah
+
+Or, if you picked something completely off-the-wall in your migration, you can specify each of the 4 columns individually:
+
+    blameable :cre_at => :made_at, :upd_at => :changed_at, :cre_by => :invented_by, :upd_by => :hacked_by
+
+And if you don't like the default association names, you can define those too:
+
+    blameable :cre_user => :inventor, :upd_user => :hacker
+
+Finally, you can cascade modifications from a `blameable` model to one of its associations.  Whenever a record of the `blameable` class is inserted, updated, or deleted, the `upd_at`/`upd_by` columns on the associated record will be updated.  For example:
+
+    class Foo < ActiveRecord::Base
+      belongs_to :bar
+      belongs_to :project
+      blameable :cascade => [:project, :bar]
+    end
+
+Or, just specify a single cascade:
+
+    class Foo < ActiveRecord::Base
+      belongs_to :bar
+      belongs_to :project
+      blameable :cascade => :bar
+    end
 
 
 Issues and Contributing
