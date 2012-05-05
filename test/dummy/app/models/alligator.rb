@@ -1,6 +1,6 @@
 class Alligator < ActiveRecord::Base
   belongs_to :project
-  attr_accessible :name
-
+  has_many :flags
+  attr_accessible :name, :project_id
   blameable :prefix => :gator, :cascade => :project
 end

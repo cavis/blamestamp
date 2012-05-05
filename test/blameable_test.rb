@@ -53,7 +53,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "cre_at option" do
-    f = Flag.new()
+    f = Flag.new(:origin => 'aoeu')
     assert_nil f.made_at, "already has cre_at"
     f.save()
     assert_not_nil f.made_at, "didn't set cre_at"
@@ -68,7 +68,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "cre_by option" do
-    f = Flag.new()
+    f = Flag.new(:origin => 'aoeu')
     assert_nil f.made_by, "already has cre_by"
     f.save()
     assert_not_nil f.made_by, "didn't set cre_by"
@@ -104,9 +104,11 @@ class BlameableTest < ActiveSupport::TestCase
 
   def set_blamers(rec, cre_user, upd_user)
     Blamestamp::set_blame_user(cre_user.id)
-    rec.blame_create()
+    rec.blame_them!(:cre_at, :cre_by, true)
+    rec.cascade_blame
     Blamestamp::set_blame_user(upd_user.id)
-    rec.blame_update()
+    rec.blame_them!(:upd_at, :upd_by, true)
+    rec.cascade_blame
   end
 
 end

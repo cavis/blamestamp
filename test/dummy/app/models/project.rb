@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
-  blameable
+  has_many :alligators
+  has_many :flags
   attr_accessible :desc, :title
+  blameable
 end

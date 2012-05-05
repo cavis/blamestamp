@@ -17,7 +17,7 @@ module Blamestamp
         # callbacks
         self.before_create :blame_create
         self.before_update :blame_update
-        self.after_destroy :blame_delete
+        self.after_destroy :blame_destroy
       end
 
       private
@@ -39,23 +39,44 @@ module Blamestamp
       end
     end
 
+    # main blamer workhorse
+    def blame_them!(at_key, by_key, force=false)
+      at_col = self.blameable_config[at_key]
+      by_col = self.blameable_config[by_key]
+
+      # only blame if it wasn't explicitly set
+      if force || !(self.changed - [at_col.to_s, by_col.to_s]).empty?
+        self[at_col] = Time.now
+        self[by_col] = Blamestamp::get_blame_user
+        return true
+      end
+
+      return false # nothing saved!
+    end
+
+    # cascade the blame up
+    def cascade_blame
+      self.blameable_config[:cascade].each do |assoc|
+        if self.send(assoc)
+          self.send(assoc).blame_them!(:upd_at, :upd_by, true)
+          self.send(assoc).save :validate => false
+        end
+      end
+    end
+
     # create callback
     def blame_create
-      self[self.blameable_config[:cre_at]] = Time.now
-      self[self.blameable_config[:cre_by]] = Blamestamp::get_blame_user()
-      self.blameable_config[:cascade].each { |assoc| self.send(assoc).blame_update() if self.send(assoc) }
+      self.cascade_blame() if self.blame_them!(:cre_at, :cre_by)
     end
 
     # update callback
     def blame_update
-      self[self.blameable_config[:upd_at]] = Time.now
-      self[self.blameable_config[:upd_by]] = Blamestamp::get_blame_user()
-      self.blameable_config[:cascade].each { |assoc| self.send(assoc).blame_update() if self.send(assoc) }
+      self.cascade_blame() if self.blame_them!(:upd_at, :upd_by)
     end
 
-    # delete callback (just updates cascades)
-    def blame_delete
-      self.blameable_config[:cascade].each { |assoc| self.send(assoc).blame_update() if self.send(assoc) }
+    # destory callback
+    def blame_destroy
+      self.cascade_blame()
     end
   end
 end
