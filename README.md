@@ -19,7 +19,7 @@ Currently only works with a combination of Devise, ActiveRecord and ActiveContro
 Installation
 ------------
 
-Blamestamp should be installed as a gem in your app.  Currently, it is only available as the latest-build on github.  Fixed versions forth-coming.
+Blamestamp should be installed as a gem in your app.
 
 Include the gem in your Gemfile:
 
