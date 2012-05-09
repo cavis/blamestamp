@@ -7,7 +7,7 @@ require "blamestamp/version"
 Gem::Specification.new do |s|
   s.name        = "blamestamp"
   s.version     = Blamestamp::VERSION
-  s.authors     = ["rtanc"]
+  s.authors     = ["cavis"]
   s.email       = ["ryancavis@gmail.com"]
   s.homepage    = "https://github.com/rtanc/blamestamp"
   s.summary     = "Basic, predictable user/datetime blaming for ActiveRecords"
