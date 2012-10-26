@@ -53,6 +53,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "cre_at option" do
+    Blamestamp::set_blame_user(999)
     f = Flag.new(:origin => 'aoeu')
     assert_nil f.made_at, "already has cre_at"
     f.save()
@@ -60,6 +61,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "upd_at option" do
+    Blamestamp::set_blame_user(999)
     f = flags(:semaphore)
     f.origin = "something else"
     assert_nil f.changed_at, "already has upd_at"
@@ -68,6 +70,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "cre_by option" do
+    Blamestamp::set_blame_user(999)
     f = Flag.new(:origin => 'aoeu')
     assert_nil f.made_by, "already has cre_by"
     f.save()
@@ -75,6 +78,7 @@ class BlameableTest < ActiveSupport::TestCase
   end
 
   test "upd_by option" do
+    Blamestamp::set_blame_user(999)
     f = flags(:semaphore)
     f.origin = "something else"
     assert_nil f.hacked_by, "already has upd_by"
@@ -100,15 +104,47 @@ class BlameableTest < ActiveSupport::TestCase
     assert_equal users(:cameron).email, f.hacker.email, "incorrect upd_user"
   end
 
+  test "required option" do
+    Blamestamp::unset_blame_user
+    a = Alligator.new(:name => 'ted')
+    assert_raise Blamestamp::NoBlameUserError do
+      a.save
+    end
+  end
+
+  test "non-required option" do
+    Blamestamp::unset_blame_user
+    f = Flag.new
+    assert_equal f.save!, true, "non-blame-requiring flag didn't save"
+  end
+
+  test "overriding stamper by id" do
+    harold = users(:harold)
+    isak = users(:isak)
+    Blamestamp::set_blame_user(harold.id)
+    a = Alligator.new(:name => 'ted')
+    a.gator_cre_by = isak.id
+    a.save!
+    assert_equal a.gator_cre_by, isak.id, "did not override stamper"
+  end
+
+  test "overriding stamper by assoc" do
+    harold = users(:harold)
+    isak = users(:isak)
+    Blamestamp::set_blame_user(harold.id)
+    a = Alligator.new(:name => 'ted')
+    a.gator_cre_user = isak
+    a.save!
+    assert_equal a.gator_cre_by, isak.id, "did not override stamper"
+  end
+
   private
 
   def set_blamers(rec, cre_user, upd_user)
     Blamestamp::set_blame_user(cre_user.id)
-    rec.blame_them!(:cre_at, :cre_by, true)
-    rec.cascade_blame
+    rec.blame_create
     Blamestamp::set_blame_user(upd_user.id)
-    rec.blame_them!(:upd_at, :upd_by, true)
-    rec.cascade_blame
+    rec.blame_update
   end
 
 end

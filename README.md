@@ -86,6 +86,16 @@ Additionally, `blameable` adds 2 relations to your models:
 
 These are standard `belongs_to` associations, and will be nil unless the `_at` column is populated.
 
+Overriding Stamps
+-----------------
+
+If you want, you can manually set the blamestamps instead of letting the remote user set them.  For example:
+
+    user1 = User.new
+    foo1 = Foo.new
+    foo1.blame_cre_user = user1
+    foo1.save!
+    #whatever the remote user may have been, blame_cre_by is now user1.id
 
 Advanced Options
 ----------------
@@ -111,6 +121,10 @@ Or, if you picked something completely off-the-wall in your migration, you can s
 And if you don't like the default association names, you can define those too:
 
     blameable :cre_user => :inventor, :upd_user => :hacker
+
+If you're concerned about data validation, you can make sure errors are raised if a record is ever saved with a blank `blame_cre_by`:
+
+    blameable :required => true
 
 Finally, you can cascade modifications from a `blameable` model to one of its associations.  Whenever a record of the `blameable` class is inserted, updated, or deleted, the `upd_at`/`upd_by` columns on the associated record will be updated.  For example:
 

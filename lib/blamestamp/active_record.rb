@@ -1,6 +1,8 @@
 require 'active_record'
 
 module Blamestamp
+  class NoBlameUserError < StandardError
+  end
   module Blameable
     extend ActiveSupport::Concern
 
@@ -33,32 +35,18 @@ module Blamestamp
           :upd_user => opts[:upd_user] || "#{prefix}_upd_user".to_sym,
           :class    => opts[:class]    || "User".to_sym,
           :cascade  => opts[:cascade]  || [],
+          :required => opts[:required] || false,
         }
         cfg[:cascade] = [cfg[:cascade]] if !cfg[:cascade].kind_of?(Array)
         return cfg
       end
     end
 
-    # main blamer workhorse
-    def blame_them!(at_key, by_key, force=false)
-      at_col = self.blameable_config[at_key]
-      by_col = self.blameable_config[by_key]
-
-      # only blame if it wasn't explicitly set
-      if force || !(self.changed - [at_col.to_s, by_col.to_s]).empty?
-        self[at_col] = Time.now
-        self[by_col] = Blamestamp::get_blame_user
-        return true
-      end
-
-      return false # nothing saved!
-    end
-
     # cascade the blame up
-    def cascade_blame
+    def cascade_blame!(time, usr_id)
       self.blameable_config[:cascade].each do |assoc|
         if self.send(assoc)
-          self.send(assoc).blame_them!(:upd_at, :upd_by, true)
+          self.send(assoc).blame_cascade(time, usr_id)
           self.send(assoc).save :validate => false
         end
       end
@@ -66,17 +54,55 @@ module Blamestamp
 
     # create callback
     def blame_create
-      self.cascade_blame() if self.blame_them!(:cre_at, :cre_by)
+      at_col = self.blameable_config[:cre_at]
+      by_col = self.blameable_config[:cre_by]
+      name   = self.blameable_config[:cre_user]
+
+      # only set blanks
+      self[at_col] = Time.now if self[at_col].blank?
+      self[by_col] = Blamestamp::get_blame_user if self[by_col].blank? && !self.send(name)
+
+      # required option
+      raise NoBlameUserError if self.blameable_config[:required] && !self[by_col]
+
+      # cascade
+      self.cascade_blame!(self[at_col], self[by_col])
     end
 
     # update callback
     def blame_update
-      self.cascade_blame() if self.blame_them!(:upd_at, :upd_by)
+      at_col = self.blameable_config[:upd_at]
+      by_col = self.blameable_config[:upd_by]
+      name   = self.blameable_config[:upd_user]
+
+      # respect manual user updates
+      self[at_col] = Time.now unless self.changed.include?(at_col)
+      self[by_col] = Blamestamp::get_blame_user unless self.changed.include?(by_col)
+      self.cascade_blame!(self[at_col], self[by_col])
     end
 
     # destory callback
     def blame_destroy
-      self.cascade_blame()
+      self.cascade_blame!(Time.now, Blamestamp::get_blame_user)
+    end
+
+    # called by other models, when they're updated
+    def blame_cascade(time, usr_id)
+      at_col = self.blameable_config[:upd_at]
+      by_col = self.blameable_config[:upd_by]
+      self[at_col] = time
+      self[by_col] = usr_id
+    end
+
+    # check if non-blame columns have changed
+    def has_non_blame_changes?
+      cols = [
+        self.blameable_config[:cre_at],
+        self.blameable_config[:cre_by],
+        self.blameable_config[:upd_at],
+        self.blameable_config[:upd_by],
+      ]
+      (self.changed - cols).empty? ? false : true
     end
   end
 end
